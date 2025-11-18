@@ -1,2 +1,2 @@
-PyQt6
-Pillow
+PyQt6==6.10.0
+Pillow==12.0.0

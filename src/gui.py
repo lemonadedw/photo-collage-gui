@@ -5,7 +5,7 @@ from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel,
     QLineEdit, QPushButton, QFileDialog, QMessageBox, QSizePolicy, QComboBox
 )
-from PyQt6.QtGui import QPixmap, QIcon
+from PyQt6.QtGui import QPixmap, QIcon, QFont
 from PyQt6.QtCore import Qt, QThread, pyqtSignal, pyqtSlot, QStandardPaths
 from PIL import ImageQt
 from photo_collage import create_collage
@@ -41,9 +41,53 @@ class PhotoCollageApp(QMainWindow):
         super().__init__()
         self.setWindowTitle("Photo Collage Creator")
         self.init_ui()
+        # Apply small platform-specific tweaks (sizes, fonts) for a more native feel
+        try:
+            self.apply_platform_tweaks()
+        except Exception:
+            # Non-critical: keep running even if tweaks fail
+            pass
         self.generated_collage = None
         self.check_default_folder()
         self.initial_resize_done = False
+
+    def apply_platform_tweaks(self):
+        """Apply platform-specific UI tweaks to make controls feel more native.
+
+        On macOS this will increase button heights, use the system font hint,
+        and enable unified title/toolbars where available.
+        """
+        if sys.platform != "darwin":
+            return
+
+        # Enable high-DPI pixmaps and scaling (better on Retina displays)
+        QApplication.setAttribute(
+            Qt.ApplicationAttribute.AA_UseHighDpiPixmaps, True)
+        QApplication.setAttribute(
+            Qt.ApplicationAttribute.AA_EnableHighDpiScaling, True)
+
+        # Set a system-like font size/hint so controls size match platform expectations
+        font = self.font() or QFont()
+        font.setPointSize(max(12, font.pointSize()))
+        font.setStyleHint(QFont.StyleHint.System)
+        QApplication.instance().setFont(font)
+
+        # Use unified title/tool bar appearance on macOS where available
+        try:
+            self.setUnifiedTitleAndToolBarOnMac(True)
+        except Exception:
+            pass
+
+        # Tweak buttons: slightly taller and small padding so they feel mac-like
+        for btn in self.main_widget.findChildren(QPushButton):
+            try:
+                btn.setMinimumHeight(28)
+                # avoid forcing heavy stylesheet; add only minimal padding
+                existing = btn.styleSheet() or ""
+                if "padding" not in existing:
+                    btn.setStyleSheet(existing + "padding:6px 12px;")
+            except Exception:
+                continue
 
     def init_ui(self):
         self.main_widget = QWidget()
