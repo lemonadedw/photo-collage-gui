@@ -1,4 +1,48 @@
-images/*
-dist/
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
 build/
+dist/
+*.egg-info/
+*.egg
+*.whl
+
+# PyInstaller spec files
 gui.spec
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Editor / OS files
+.vscode/
+.idea/
+.DS_Store
+
+# Testing / caches / coverage
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Logs
+*.log
+
+# Optional: compiled wheel metadata
+pip-wheel-metadata/
+
+# Project src cache
+src/__pycache__/
+
+# Images / static assets
+# If these directories contain generated or user data you DON'T want in git,
+# uncomment the following lines to ignore them. By default they are tracked.
+static/
